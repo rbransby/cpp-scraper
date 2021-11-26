@@ -28,11 +28,12 @@ export const scheduledCPPScrape = functions.https.onRequest(
             .firestore()
             .collection("liveParkingSpaceData")
             .doc("liveParkingSpaceData")
-            .set(parkingSpaceData);
+            .set({data:parkingSpaceData});
         await admin
             .firestore()
             .collection("timeSeriesParkingSpaces")
             .doc(`${Math.floor(Date.now() / 1000)}`)
-            .set(parkingSpaceData);
+            .set({data:parkingSpaceData});
+        return;
     }
 );
