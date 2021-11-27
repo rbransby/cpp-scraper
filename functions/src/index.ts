@@ -30,10 +30,15 @@ export const scheduledCPPScrape = functions.pubsub
           .collection("liveParkingSpaceData")
           .doc("liveParkingSpaceData")
           .set({data: parkingSpaceData});
-      await admin
-          .firestore()
-          .collection("timeSeriesParkingSpaces")
-          .doc(`${Math.floor(Date.now() / 1000)}`)
-          .set({data: parkingSpaceData});
+      for (const parkingLot of parkingSpaceData) {
+        await admin
+            .firestore()
+            .collection("timeSeriesParkingSpaced")
+            .doc(parkingLot.nid)
+            .set(
+                {[Math.floor(Date.now() / 1000)]: parkingLot},
+                {merge: true}
+            );
+      }
       return;
     });
