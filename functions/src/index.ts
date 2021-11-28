@@ -24,6 +24,7 @@ export const scrapeData = async () => {
 export const scheduledCPPScrape = functions.pubsub
     .schedule("every 15 minutes")
     .onRun(async (context) => {
+      const timestampValue = Math.floor(Date.now() / 1000);
       const parkingSpaceData = await scrapeData();
       await admin
           .firestore()
@@ -33,12 +34,9 @@ export const scheduledCPPScrape = functions.pubsub
       for (const parkingLot of parkingSpaceData) {
         await admin
             .firestore()
-            .collection("timeSeriesParkingSpaced")
-            .doc(parkingLot.nid)
-            .set(
-                {[Math.floor(Date.now() / 1000)]: parkingLot},
-                {merge: true}
-            );
+            .collection(`previousParkingSpaceData_${parkingLot.nid}`)
+            .doc(`${timestampValue}`)
+            .set({timestamp: timestampValue, ...parkingLot});
       }
       return;
     });
