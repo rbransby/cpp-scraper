@@ -13,7 +13,7 @@
         "ecmaVersion": 13
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint", "prettier"
     ],
     "rules": {
         "no-console":"off"
